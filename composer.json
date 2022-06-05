@@ -1,0 +1,23 @@
+{
+    "name": "xyz/boss",
+    "description": "xyz boss system",
+    "type": "library",
+    "require": {
+        "php": ">=7.1.0",
+        "ext-curl": "*"
+    },
+    "require-dev": {},
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "lianglipeng",
+            "email": "lianglipeng@xiaoyezi.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "Xyz\\": "src/"
+        }
+    }
+}
