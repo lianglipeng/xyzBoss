@@ -28,6 +28,7 @@ class Boss
     private $apiPrivilegeData = [
         'curl_error'            => '',//curl远程请求错误信息，次数据不为空代表请求失败
         'use_privilege'         => false,//api接口使用权限：true可以使用 false不可以使用
+        'is_public'             => false,//是否是公共权限：true是 false不是（当为true时，不必在考虑数据权限data_privilege）
         'data_privilege'        => null,//当使用权限=true时，数据权限才有效：当用户拥有多个角色，并勾选了同一个api，此时数据权限取多个api接口的最大权限
         'data_privilege_config' => [],//数据权限枚举值配置定义
     ];
@@ -125,9 +126,13 @@ class Boss
     private function formatNormalSystemPrivilegeData($apiPrivilegeList, $apiUri)
     {
         foreach ($apiPrivilegeList as $v) {
-            if ($v['uri'] == $apiUri && !empty($v['data_privilege_config'])) {
-                $maxApiPrivilegeData[] = $v['data_privilege'];
-                $this->apiPrivilegeData['data_privilege_config'] = $v['data_privilege_config'];
+            if ($v['uri'] == $apiUri) {
+                if ($v['is_public'] == 1) {
+                    $this->apiPrivilegeData['is_public'] = true;
+                } elseif (!empty($v['data_privilege_config'])) {
+                    $maxApiPrivilegeData[] = $v['data_privilege'];
+                    $this->apiPrivilegeData['data_privilege_config'] = $v['data_privilege_config'];
+                }
             }
         }
         if (!empty($maxApiPrivilegeData)) {
@@ -144,18 +149,22 @@ class Boss
     {
         $tmpDataPrivilegeKeys = [];
         foreach ($apiPrivilegeList as $v) {
-            if ($v['uri'] == $apiUri && !empty($v['data_privilege_config'])) {
-                if (empty($this->apiPrivilegeData['data_privilege_config'])) {
-                    $this->apiPrivilegeData['data_privilege_config'] = $v['data_privilege_config'];
-                    $tmpDataPrivilegeKeys = array_keys($this->apiPrivilegeData['data_privilege_config']);
-                }
-                if (empty($this->apiPrivilegeData['data_privilege'])) {
-                    $this->apiPrivilegeData['data_privilege'] = $v['data_privilege'];
-                } else {
-                    if (array_search($v['data_privilege'],
-                            $tmpDataPrivilegeKeys) < array_search($this->apiPrivilegeData['data_privilege'],
-                            $tmpDataPrivilegeKeys)) {
+            if ($v['uri'] == $apiUri) {
+                if ($v['is_public'] == 1) {
+                    $this->apiPrivilegeData['is_public'] = true;
+                } elseif (!empty($v['data_privilege_config'])) {
+                    if (empty($this->apiPrivilegeData['data_privilege_config'])) {
+                        $this->apiPrivilegeData['data_privilege_config'] = $v['data_privilege_config'];
+                        $tmpDataPrivilegeKeys = array_keys($this->apiPrivilegeData['data_privilege_config']);
+                    }
+                    if (empty($this->apiPrivilegeData['data_privilege'])) {
                         $this->apiPrivilegeData['data_privilege'] = $v['data_privilege'];
+                    } else {
+                        if (array_search($v['data_privilege'],
+                                $tmpDataPrivilegeKeys) < array_search($this->apiPrivilegeData['data_privilege'],
+                                $tmpDataPrivilegeKeys)) {
+                            $this->apiPrivilegeData['data_privilege'] = $v['data_privilege'];
+                        }
                     }
                 }
             }
