@@ -1,0 +1,7 @@
+/vendor/
+/logs/*
+/.idea/*
+.env*
+.local
+.DS_Store
+.php_cs.*
