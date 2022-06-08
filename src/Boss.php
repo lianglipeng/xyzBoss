@@ -171,6 +171,24 @@ class Boss
         }
     }
 
+    /**
+     * 获取用户所属部门下所有员工uuid列表
+     * @param string $uuid
+     * @return array
+     */
+    public function getDeptUserList(string $uuid): array
+    {
+        $employeeUuidList = [];
+        $employeeData = $this->getForeignStaff([$uuid]);
+        if (empty($employeeData['response_data']['data'][0])) {
+            return $employeeUuidList;
+        }
+        foreach ($employeeData['response_data']['data'][0]['departments'] as $dv) {
+            $employeeUuidList = array_merge($employeeUuidList,
+                array_column($this->getForeignStaff([], [], $dv['department_id'])['response_data']['data'], 'uuid'));
+        }
+        return array_unique($employeeUuidList);
+    }
 
     /**
      * 获取员工数据
