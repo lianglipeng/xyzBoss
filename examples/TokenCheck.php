@@ -1,9 +1,9 @@
 <?php
 require __DIR__.'/../autoload.php';
 
-$obj = new Xyz\UserCenter(3,'ebf28ee3b32f026d', 'https://uc-pre.xiaoyezi.com');
-$result = $obj->tokenCheck("U1RfY2FkZDNodnZ2bm5mNnRvNnU5dDA=");
-var_dump($result);
+//$obj = new Xyz\UserCenter(3,'ebf28ee3b32f026d', 'https://uc-pre.xiaoyezi.com');
+//$result = $obj->tokenCheck("U1RfY2FkZDNodnZ2bm5mNnRvNnU5dDA=");
+//var_dump($result);
 //array(2) {
 //  ["curl_error"]=>
 //  string(0) ""

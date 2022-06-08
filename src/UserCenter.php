@@ -10,8 +10,12 @@ class UserCenter
     private $appSecret = null;
     //访问域名
     private $host = null;
-    //用户中心校验token：http://yapi.xiaoyezi.com/project/46/interface/api/1101
+    //校验token：http://yapi.xiaoyezi.com/project/46/interface/api/1101
     const API_USER_CENTER_TOKEN_CHECK = '/rapi/v1/auth/tokencheck';
+    //service ticket验证:http://yapi.xiaoyezi.com/project/58/interface/api/7616
+    const API_USER_CENTER_TICKET_VERIFY = '/api/sso/verify';
+    //登出
+    const API_SSO_LOGOUT = '/api/sso/logout';
 
     /**
      * 构造函数
@@ -37,5 +41,26 @@ class UserCenter
             $this->host . self::API_USER_CENTER_TOKEN_CHECK . '?appId=' . $this->appId . '&secret=' . $this->appSecret,
             ['token' => $token],
             'POST');
+    }
+
+    /**
+     * ticket校验
+     * @param string $ticket
+     * @return array
+     */
+    public function ticketCheck(string $ticket): array
+    {
+        return curlRequest::curlSendRequest(
+            $this->host . self::API_USER_CENTER_TICKET_VERIFY . "?sso_service_ticket=" . $ticket);
+    }
+
+    /**
+     * 返回退出登录地址
+     * @return string
+     */
+    public function getSsoLogoutUrl(): string
+    {
+        $formatHost = strpos($this->host, '.pri') === false ? $this->host : str_replace('.pri', '', $this->host);
+        return $formatHost . self::API_SSO_LOGOUT . "?app_id=" . $this->appId;
     }
 }
