@@ -1,7 +1,7 @@
 <?php
 
 namespace Xyz;
-
+use Xyz\CurlRequest;
 class Boss
 {
     //应用ID
@@ -62,7 +62,7 @@ class Boss
         }
         //去重处理
         $privilegeData['response_data']['data']['list'] = array_values(array_column($privilegeData['response_data']['data']['list'],
-            null, 'uri'));
+            null, 'unique_en_name'));
         return $privilegeData;
     }
 

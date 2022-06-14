@@ -1,7 +1,7 @@
 <?php
 
 namespace Xyz;
-
+use Xyz\CurlRequest;
 class UserCenter
 {
     //应用ID
